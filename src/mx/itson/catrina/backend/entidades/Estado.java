@@ -4,6 +4,7 @@
  */
 package mx.itson.catrina.backend.entidades;
 
+import com.google.gson.Gson;
 import java.util.List;
 
 /**
@@ -19,6 +20,18 @@ public class Estado {
     private Cliente cliente;
     private List<Movimiento> movimientos;
 
+    public Estado deserializar(String json) {
+        Estado estado = new Estado();
+        
+        try {
+            estado = new Gson().fromJson(json, Estado.class);
+        } catch (Exception e) {
+            System.err.println("Errore: " + e.getMessage());
+        }
+        
+        return estado;
+    }
+    
     /**
      * @return the producto
      */

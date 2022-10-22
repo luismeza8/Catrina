@@ -14,7 +14,7 @@ import mx.itson.catrina.backend.enumeradores.Tipo;
 public class Movimiento {
     private Date fecha;
     private String descripcion;
-    private int cantidad;
+    private double cantidad;
     private Tipo tipo;
 
     /**
@@ -48,14 +48,14 @@ public class Movimiento {
     /**
      * @return the cantidad
      */
-    public int getCantidad() {
+    public double getCantidad() {
         return cantidad;
     }
 
     /**
      * @param cantidad the cantidad to set
      */
-    public void setCantidad(int cantidad) {
+    public void setCantidad(double cantidad) {
         this.cantidad = cantidad;
     }
 
