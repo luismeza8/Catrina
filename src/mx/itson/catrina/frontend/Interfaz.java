@@ -8,6 +8,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import javax.swing.JFileChooser;
+import javax.swing.table.DefaultTableModel;
 import mx.itson.catrina.backend.entidades.Estado;
 
 /**
@@ -35,9 +36,16 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnBuscar = new javax.swing.JButton();
         lblNombre = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblContable = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblInfo = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(900, 700));
 
+        jPanel1.setPreferredSize(new java.awt.Dimension(900, 700));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnBuscar.setText("Buscar");
@@ -46,8 +54,75 @@ public class Interfaz extends javax.swing.JFrame {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 290, -1, -1));
-        jPanel1.add(lblNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 210, 30));
+        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 20, -1, -1));
+        jPanel1.add(lblNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 130, 210, 30));
+
+        jLabel1.setFont(new java.awt.Font("Cantarell", 1, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Estado de Cuenta");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 850, 40));
+
+        tblContable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", "Info"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblContable);
+        if (tblContable.getColumnModel().getColumnCount() > 0) {
+            tblContable.getColumnModel().getColumn(0).setResizable(false);
+            tblContable.getColumnModel().getColumn(0).setPreferredWidth(2);
+        }
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 300, 120));
+
+        tblInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", "Info"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblInfo);
+        if (tblInfo.getColumnModel().getColumnCount() > 0) {
+            tblInfo.getColumnModel().getColumn(0).setResizable(false);
+            tblInfo.getColumnModel().getColumn(0).setPreferredWidth(2);
+        }
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 300, 120));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -65,22 +140,65 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
-            
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-            
+
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
                 File archivo = fileChooser.getSelectedFile();
-                
+
                 byte archivoByte[] = Files.readAllBytes(archivo.toPath());
-                
+
                 String contenido = new String(archivoByte, StandardCharsets.UTF_8);
-                
+
                 Estado estado = new Estado().deserializar(contenido);
+
+                DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
+                DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
                 
-                lblNombre.setText(estado.getClabe());
+                modelInfo.addRow(
+                        new Object[] {
+                            "RFC", estado.getCliente().getRfc()
+                        }
+                );
+                
+                modelInfo.addRow(
+                        new Object[] {
+                            "Domicilio", estado.getCliente().getDomicilio()
+                        }
+                );
+                
+                modelInfo.addRow(
+                        new Object[] {
+                            "Ciudad", estado.getCliente().getCiudad()
+                        }
+                );
+                
+                modelInfo.addRow(
+                        new Object[] {
+                            "CP", estado.getCliente().getCp()
+                        }
+                );
+                
+                modelContable.addRow(
+                        new Object[] {
+                            "Cuenta", estado.getCuenta()
+                        }
+                );
+                
+                modelContable.addRow(
+                        new Object[] {
+                            "Clabe", estado.getClabe()
+                        }
+                );
+                
+                modelContable.addRow(
+                        new Object[] {
+                            "Moneda", estado.getMoneda()
+                        }
+                );
             }
-            
+
         } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
         }
@@ -123,7 +241,12 @@ public class Interfaz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblNombre;
+    private javax.swing.JTable tblContable;
+    private javax.swing.JTable tblInfo;
     // End of variables declaration//GEN-END:variables
 }
