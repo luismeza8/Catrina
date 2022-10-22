@@ -67,29 +67,18 @@ public class Interfaz extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", "Info"
+                "Info"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
-            };
             boolean[] canEdit = new boolean [] {
-                true, false
+                false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jScrollPane1.setViewportView(tblContable);
-        if (tblContable.getColumnModel().getColumnCount() > 0) {
-            tblContable.getColumnModel().getColumn(0).setResizable(false);
-            tblContable.getColumnModel().getColumn(0).setPreferredWidth(2);
-        }
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 300, 120));
 
@@ -98,29 +87,18 @@ public class Interfaz extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", "Info"
+                "Info"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
-            };
             boolean[] canEdit = new boolean [] {
-                true, false
+                false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jScrollPane2.setViewportView(tblInfo);
-        if (tblInfo.getColumnModel().getColumnCount() > 0) {
-            tblInfo.getColumnModel().getColumn(0).setResizable(false);
-            tblInfo.getColumnModel().getColumn(0).setPreferredWidth(2);
-        }
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 300, 120));
 
@@ -144,7 +122,7 @@ public class Interfaz extends javax.swing.JFrame {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File archivo = fileChooser.getSelectedFile();
 
                 byte archivoByte[] = Files.readAllBytes(archivo.toPath());
@@ -155,48 +133,27 @@ public class Interfaz extends javax.swing.JFrame {
 
                 DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
+
+                Object[] objetosCliente = {
+                    "RFC: " + estado.getCliente().getRfc(),
+                    "Domicilio: " + estado.getCliente().getDomicilio(),
+                    "Cuidad: " + estado.getCliente().getCiudad(),
+                    "CP: " + estado.getCliente().getCp()
+                };
+
+                for (Object o : objetosCliente) {
+                    modelInfo.addRow(new Object[]{o});
+                }
                 
-                modelInfo.addRow(
-                        new Object[] {
-                            "RFC", estado.getCliente().getRfc()
-                        }
-                );
+                Object[] objetosCuenta = {
+                    "Cuenta: " + estado.getCuenta(),
+                    "Clabe: " + estado.getClabe(),
+                    "Moneda: " + estado.getMoneda()
+                };
                 
-                modelInfo.addRow(
-                        new Object[] {
-                            "Domicilio", estado.getCliente().getDomicilio()
-                        }
-                );
-                
-                modelInfo.addRow(
-                        new Object[] {
-                            "Ciudad", estado.getCliente().getCiudad()
-                        }
-                );
-                
-                modelInfo.addRow(
-                        new Object[] {
-                            "CP", estado.getCliente().getCp()
-                        }
-                );
-                
-                modelContable.addRow(
-                        new Object[] {
-                            "Cuenta", estado.getCuenta()
-                        }
-                );
-                
-                modelContable.addRow(
-                        new Object[] {
-                            "Clabe", estado.getClabe()
-                        }
-                );
-                
-                modelContable.addRow(
-                        new Object[] {
-                            "Moneda", estado.getMoneda()
-                        }
-                );
+                for (Object o : objetosCuenta) {
+                    modelContable.addRow(new Object[]{o});
+                }
             }
 
         } catch (Exception ex) {
