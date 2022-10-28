@@ -6,6 +6,7 @@ package mx.itson.catrina.backend.entidades;
 
 import com.google.gson.Gson;
 import java.util.List;
+import mx.itson.catrina.backend.enumeradores.Tipo;
 
 /**
  *
@@ -22,16 +23,40 @@ public class Estado {
 
     public Estado deserializar(String json) {
         Estado estado = new Estado();
-        
+
         try {
             estado = new Gson().fromJson(json, Estado.class);
         } catch (Exception e) {
             System.err.println("Errore: " + e.getMessage());
         }
-        
+
         return estado;
     }
     
+    public double suma(List<Movimiento> listaMovimientos){
+        double resultado = 0;
+        
+        for(Movimiento m : listaMovimientos){
+            switch (m.getTipo()) {
+                case DEPOSITO -> resultado += m.getCantidad();
+                case RETIRO -> resultado -= m.getCantidad();
+                default -> throw new AssertionError();
+            }
+        }
+        
+        return resultado;
+    }
+
+    public Object[] obtenerLista() {
+        Object[] lista = {
+            "Cuenta: " + getCuenta(),
+            "Clabe: " + getClabe(),
+            "Moneda: " + getMoneda()
+        };
+
+        return lista;
+    }
+
     /**
      * @return the producto
      */

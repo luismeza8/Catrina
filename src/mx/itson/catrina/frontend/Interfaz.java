@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 import mx.itson.catrina.backend.entidades.Estado;
+import mx.itson.catrina.backend.entidades.Movimiento;
+import mx.itson.catrina.backend.enumeradores.Tipo;
 
 /**
  *
@@ -41,11 +43,13 @@ public class Interfaz extends javax.swing.JFrame {
         tblContable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblInfo = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblPrincipal = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 700));
+        setPreferredSize(new java.awt.Dimension(900, 1000));
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(900, 700));
+        jPanel1.setPreferredSize(new java.awt.Dimension(900, 1000));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnBuscar.setText("Buscar");
@@ -102,6 +106,21 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 300, 120));
 
+        tblPrincipal.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Fecha", "Descripcion", "Deposito", "Retiro", "Subtotal"
+            }
+        ));
+        jScrollPane3.setViewportView(tblPrincipal);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -125,7 +144,7 @@ public class Interfaz extends javax.swing.JFrame {
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File archivo = fileChooser.getSelectedFile();
 
-                byte archivoByte[] = Files.readAllBytes(archivo.toPath());
+                byte[] archivoByte = Files.readAllBytes(archivo.toPath());
 
                 String contenido = new String(archivoByte, StandardCharsets.UTF_8);
 
@@ -133,27 +152,38 @@ public class Interfaz extends javax.swing.JFrame {
 
                 DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
+                
+                DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
+                
+                for (Movimiento m : estado.getMovimientos()) {
+                    if(m.getTipo() == Tipo.DEPOSITO) {
+                        modelPrincipal.addRow(new Object[] {
+                            m.getFecha(),
+                            m.getDescripcion(),
+                            m.getCantidad(),
+                            " ",
+                            " "
+                        });
+                    } else if (m.getTipo() == Tipo.RETIRO) {
+                        modelPrincipal.addRow(new Object[] {
+                            m.getFecha(),
+                            m.getDescripcion(),
+                            " ",
+                            m.getCantidad(), 
+                            " "
+                        });
+                    }
+                }
 
-                Object[] objetosCliente = {
-                    "RFC: " + estado.getCliente().getRfc(),
-                    "Domicilio: " + estado.getCliente().getDomicilio(),
-                    "Cuidad: " + estado.getCliente().getCiudad(),
-                    "CP: " + estado.getCliente().getCp()
-                };
-
-                for (Object o : objetosCliente) {
+                for (Object o : estado.getCliente().obtenerLista()) {
                     modelInfo.addRow(new Object[]{o});
                 }
-                
-                Object[] objetosCuenta = {
-                    "Cuenta: " + estado.getCuenta(),
-                    "Clabe: " + estado.getClabe(),
-                    "Moneda: " + estado.getMoneda()
-                };
-                
-                for (Object o : objetosCuenta) {
+
+                for (Object o : estado.obtenerLista()) {
                     modelContable.addRow(new Object[]{o});
                 }
+
+                System.out.println(estado.suma(estado.getMovimientos()));
             }
 
         } catch (Exception ex) {
@@ -202,8 +232,10 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JTable tblContable;
     private javax.swing.JTable tblInfo;
+    private javax.swing.JTable tblPrincipal;
     // End of variables declaration//GEN-END:variables
 }

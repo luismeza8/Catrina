@@ -9,12 +9,25 @@ package mx.itson.catrina.backend.entidades;
  * @author lm
  */
 public class Cliente {
+
     private String codigo;
     private String nombre;
     private String domicilio;
     private String ciudad;
     private String rfc;
     private String cp;
+
+    public Object[] obtenerLista() {
+        Object[] lista = {
+            "Nombre: " + getNombre(),
+            "RFC: " + getRfc(),
+            "Domicilio: " + getDomicilio(),
+            "Cuidad: " + getCiudad(),
+            "CP: " + getCp()
+        };
+
+        return lista;
+    }
 
     /**
      * @return the codigo
@@ -99,6 +112,5 @@ public class Cliente {
     public void setCp(String cp) {
         this.cp = cp;
     }
-    
-    
+
 }

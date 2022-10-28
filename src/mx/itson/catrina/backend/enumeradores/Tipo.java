@@ -4,11 +4,15 @@
  */
 package mx.itson.catrina.backend.enumeradores;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  *
  * @author lm
  */
 public enum Tipo {
+    @SerializedName("1")
+    DEPOSITO,
+    @SerializedName("2")
     RETIRO,
-    DEPOSITO
 }
