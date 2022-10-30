@@ -195,12 +195,14 @@ public class Interfaz extends javax.swing.JFrame {
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
                 DefaultTableModel modelResumen = (DefaultTableModel) tblResumen.getModel();
                 DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
-                
+
                 Locale local = new Locale("es", "MX");
                 NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
                 DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
-                for (Movimiento m : estado.getMovimientos()) {
+                int mesSeleccionado = jcbMeses.getSelectedIndex();
+
+                for (Movimiento m : estado.obtenerListaMovimientosFiltrada(mesSeleccionado)) {
                     if (m.getTipo() == Tipo.DEPOSITO) {
                         modelPrincipal.addRow(new Object[]{
                             formatoFecha.format(m.getFecha()),
@@ -228,19 +230,9 @@ public class Interfaz extends javax.swing.JFrame {
                     modelContable.addRow(new Object[]{o});
                 }
 
-                int mesSeleccionado = jcbMeses.getSelectedIndex();
-                
-                modelResumen.addRow(new Object[]{
-                    formatoMoneda.format(estado.obtenerSaldoInicial(mesSeleccionado)),
-                });
-                
-                modelResumen.addRow(new Object[] {
-                    formatoMoneda.format(estado.obtenerTotalDepositos(mesSeleccionado))
-                });
-                
-                modelResumen.addRow(new Object[] {
-                    formatoMoneda.format(estado.obtenerTotalRetiros(mesSeleccionado))
-                });
+                for (Object o : estado.obtenerInfoResumen(mesSeleccionado)) {
+                    modelResumen.addRow(new Object[]{o});
+                }
             }
 
         } catch (Exception ex) {

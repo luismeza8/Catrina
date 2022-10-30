@@ -5,7 +5,10 @@
 package mx.itson.catrina.backend.entidades;
 
 import com.google.gson.Gson;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import mx.itson.catrina.backend.enumeradores.Tipo;
 
 /**
@@ -33,10 +36,10 @@ public class Estado {
         return estado;
     }
 
-    public double suma(List<Movimiento> listaMovimientos) {
+    public double suma() {
         double resultado = 0;
 
-        for (Movimiento m : listaMovimientos) {
+        for (Movimiento m : this.movimientos) {
             switch (m.getTipo()) {
                 case DEPOSITO ->
                     resultado += m.getCantidad();
@@ -60,6 +63,32 @@ public class Estado {
         return lista;
     }
 
+    public Object[] obtenerInfoResumen(int mes) {
+        Locale local = new Locale("es", "MX");
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
+
+        Object[] lista = {
+            "Saldo Inicial: " + formatoMoneda.format(obtenerSaldoInicial(mes)),
+            "Depositos: " + formatoMoneda.format(obtenerTotalDepositos(mes)),
+            "Retiros: " + formatoMoneda.format(obtenerTotalRetiros(mes)),
+            "Saldo Final: " + formatoMoneda.format(obtenerSaldoFinal(mes))
+        };
+
+        return lista;
+    }
+
+    public List<Movimiento> obtenerListaMovimientosFiltrada(int mes) {
+        List<Movimiento> movimientos = new ArrayList<>();
+
+        for (Movimiento m : this.movimientos) {
+            if (m.getFecha().getMonth() == mes) {
+                movimientos.add(m);
+            }
+        }
+
+        return movimientos;
+    }
+
     public double obtenerSaldoInicial(int mes) {
         double saldoInicial = 0;
 
@@ -75,28 +104,32 @@ public class Estado {
 
         return saldoInicial;
     }
-    
+
+    public double obtenerSaldoFinal(int mes) {
+        return (obtenerSaldoInicial(mes) + obtenerTotalDepositos(mes) - obtenerTotalRetiros(mes));
+    }
+
     public double obtenerTotalDepositos(int mes) {
         double totalDepositos = 0;
-        
-        for(Movimiento m : this.movimientos) {
+
+        for (Movimiento m : this.movimientos) {
             if (m.getTipo() == Tipo.DEPOSITO && m.getFecha().getMonth() == mes) {
                 totalDepositos += m.getCantidad();
             }
         }
-        
+
         return totalDepositos;
     }
-    
+
     public double obtenerTotalRetiros(int mes) {
         double totalRetiros = 0;
-        
-        for(Movimiento m : this.movimientos) {
+
+        for (Movimiento m : this.movimientos) {
             if (m.getTipo() == Tipo.RETIRO && m.getFecha().getMonth() == mes) {
                 totalRetiros += m.getCantidad();
             }
         }
-        
+
         return totalRetiros;
     }
 
