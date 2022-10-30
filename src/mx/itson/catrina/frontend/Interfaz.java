@@ -45,9 +45,9 @@ public class Interfaz extends javax.swing.JFrame {
         tblInfo = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblPrincipal = new javax.swing.JTable();
+        jcbMeses = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 1000));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(900, 1000));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -108,10 +108,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         tblPrincipal.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Fecha", "Descripcion", "Deposito", "Retiro", "Subtotal"
@@ -119,7 +116,10 @@ public class Interfaz extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tblPrincipal);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, -1, -1));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 570, 900, -1));
+
+        jcbMeses.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        jPanel1.add(jcbMeses, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -182,8 +182,9 @@ public class Interfaz extends javax.swing.JFrame {
                 for (Object o : estado.obtenerLista()) {
                     modelContable.addRow(new Object[]{o});
                 }
-
-                System.out.println(estado.suma(estado.getMovimientos()));
+                
+                System.out.println(estado.obtenerSaldoInicial(estado.getMovimientos(), 2));
+                
             }
 
         } catch (Exception ex) {
@@ -233,6 +234,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JComboBox<String> jcbMeses;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JTable tblContable;
     private javax.swing.JTable tblInfo;
