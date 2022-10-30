@@ -27,7 +27,7 @@ public class Estado {
         try {
             estado = new Gson().fromJson(json, Estado.class);
         } catch (Exception e) {
-            System.err.println("Errore: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
 
         return estado;

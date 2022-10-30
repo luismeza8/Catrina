@@ -46,10 +46,13 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblPrincipal = new javax.swing.JTable();
         jcbMeses = new javax.swing.JComboBox<>();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblResumen = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(900, 800));
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(900, 1000));
+        jPanel1.setPreferredSize(new java.awt.Dimension(900, 800));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnBuscar.setText("Buscar");
@@ -58,13 +61,13 @@ public class Interfaz extends javax.swing.JFrame {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 20, -1, -1));
+        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 40, -1, -1));
         jPanel1.add(lblNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 130, 210, 30));
 
         jLabel1.setFont(new java.awt.Font("Cantarell", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Estado de Cuenta");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 850, 40));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 440, 40));
 
         tblContable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -84,7 +87,7 @@ public class Interfaz extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblContable);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 300, 120));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 130, 260, 120));
 
         tblInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -104,7 +107,7 @@ public class Interfaz extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tblInfo);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 300, 120));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 130, 280, 120));
 
         tblPrincipal.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -116,10 +119,22 @@ public class Interfaz extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(tblPrincipal);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 570, 900, -1));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 900, -1));
 
         jcbMeses.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
-        jPanel1.add(jcbMeses, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
+        jPanel1.add(jcbMeses, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 40, 240, -1));
+
+        tblResumen.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Resumen del periodo"
+            }
+        ));
+        jScrollPane4.setViewportView(tblResumen);
+
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 130, 360, 120));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,7 +144,9 @@ public class Interfaz extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 976, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 24, Short.MAX_VALUE))
         );
 
         pack();
@@ -152,6 +169,7 @@ public class Interfaz extends javax.swing.JFrame {
 
                 DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
+                DefaultTableModel modelResumen = (DefaultTableModel) tblResumen.getModel();
                 
                 DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
                 
@@ -234,10 +252,12 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JComboBox<String> jcbMeses;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JTable tblContable;
     private javax.swing.JTable tblInfo;
     private javax.swing.JTable tblPrincipal;
+    private javax.swing.JTable tblResumen;
     // End of variables declaration//GEN-END:variables
 }
