@@ -28,6 +28,11 @@ public class Interfaz extends javax.swing.JFrame {
      */
     public Interfaz() {
         initComponents();
+
+        this.modelInfo = (DefaultTableModel) tblInfo.getModel();
+        this.modelContable = (DefaultTableModel) tblContable.getModel();
+        this.modelResumen = (DefaultTableModel) tblResumen.getModel();
+        this.modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
     }
 
     /**
@@ -181,75 +186,82 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    Estado estado;
+
+    // Models de las tablas
+    DefaultTableModel modelInfo;
+    DefaultTableModel modelContable;
+    DefaultTableModel modelResumen;
+    DefaultTableModel modelPrincipal;
+
+    // Formatos
+    Locale local = new Locale("es", "MX");
+    NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
+    DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+    public void vaciarTablas() {
+        modelInfo.setRowCount(0);
+        modelContable.setRowCount(0);
+        modelResumen.setRowCount(0);
+        modelPrincipal.setRowCount(0);
+    }
+
+    public void llenarTablas() {
+        int mesSeleccionado = jcbMeses.getSelectedIndex();
+        double subtotal = estado.obtenerSaldoInicial(mesSeleccionado);
+
+        for (Movimiento m : estado.obtenerListaMovimientosFiltrada(mesSeleccionado)) {
+            if (m.getTipo() == Tipo.DEPOSITO) {
+                subtotal += m.getCantidad();
+
+                modelPrincipal.addRow(new Object[]{
+                    formatoFecha.format(m.getFecha()),
+                    m.getDescripcion(),
+                    formatoMoneda.format(m.getCantidad()),
+                    " ",
+                    formatoMoneda.format(subtotal)
+                });
+            } else if (m.getTipo() == Tipo.RETIRO) {
+                subtotal -= m.getCantidad();
+
+                modelPrincipal.addRow(new Object[]{
+                    formatoFecha.format(m.getFecha()),
+                    m.getDescripcion(),
+                    " ",
+                    formatoMoneda.format(m.getCantidad()),
+                    formatoMoneda.format(subtotal)
+                });
+            }
+        }
+
+        for (Object o : estado.getCliente().obtenerLista()) {
+            modelInfo.addRow(new Object[]{o});
+        }
+
+        for (Object o : estado.obtenerLista()) {
+            modelContable.addRow(new Object[]{o});
+        }
+
+        for (Object o : estado.obtenerInfoResumen(mesSeleccionado)) {
+            modelResumen.addRow(new Object[]{o});
+        }
+    }
+
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
-
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+
                 File archivo = fileChooser.getSelectedFile();
-
                 byte[] archivoByte = Files.readAllBytes(archivo.toPath());
-
                 String contenido = new String(archivoByte, StandardCharsets.UTF_8);
 
-                Estado estado = new Estado().deserializar(contenido);
+                estado = new Estado().deserializar(contenido);
 
-                DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
-                DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
-                DefaultTableModel modelResumen = (DefaultTableModel) tblResumen.getModel();
-                DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
-                
-                modelInfo.setRowCount(0);
-                modelContable.setRowCount(0);
-                modelResumen.setRowCount(0);
-                modelPrincipal.setRowCount(0);
-
-                Locale local = new Locale("es", "MX");
-                NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
-                DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-
-                int mesSeleccionado = jcbMeses.getSelectedIndex();
-                
-                double subtotal = estado.obtenerSaldoInicial(mesSeleccionado);
-
-                for (Movimiento m : estado.obtenerListaMovimientosFiltrada(mesSeleccionado)) {
-                    if (m.getTipo() == Tipo.DEPOSITO) {
-                        subtotal += m.getCantidad();
-                        
-                        modelPrincipal.addRow(new Object[]{
-                            formatoFecha.format(m.getFecha()),
-                            m.getDescripcion(),
-                            formatoMoneda.format(m.getCantidad()),
-                            " ",
-                            formatoMoneda.format(subtotal),
-                            
-                        });
-                    } else if (m.getTipo() == Tipo.RETIRO) {
-                        subtotal -= m.getCantidad();
-                        
-                        modelPrincipal.addRow(new Object[]{
-                            formatoFecha.format(m.getFecha()),
-                            m.getDescripcion(),
-                            " ",
-                            formatoMoneda.format(m.getCantidad()),
-                            formatoMoneda.format(subtotal)
-                        });
-                    }
-                }
-
-                for (Object o : estado.getCliente().obtenerLista()) {
-                    modelInfo.addRow(new Object[]{o});
-                }
-
-                for (Object o : estado.obtenerLista()) {
-                    modelContable.addRow(new Object[]{o});
-                }
-
-                for (Object o : estado.obtenerInfoResumen(mesSeleccionado)) {
-                    modelResumen.addRow(new Object[]{o});
-                }
+                vaciarTablas();
+                llenarTablas();
             }
 
         } catch (Exception ex) {
@@ -258,8 +270,11 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void jcbMesesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbMesesActionPerformed
-        int mesSeleccionado = jcbMeses.getSelectedIndex();
-        System.out.println(mesSeleccionado);
+        try {
+            vaciarTablas();
+            llenarTablas();
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_jcbMesesActionPerformed
 
     /**

@@ -36,23 +36,6 @@ public class Estado {
         return estado;
     }
 
-    public double suma() {
-        double resultado = 0;
-
-        for (Movimiento m : this.movimientos) {
-            switch (m.getTipo()) {
-                case DEPOSITO ->
-                    resultado += m.getCantidad();
-                case RETIRO ->
-                    resultado -= m.getCantidad();
-                default ->
-                    throw new AssertionError();
-            }
-        }
-
-        return resultado;
-    }
-
     public Object[] obtenerLista() {
         Object[] lista = {
             "Cuenta: " + getCuenta(),
@@ -137,13 +120,13 @@ public class Estado {
 
     public double obtenerSubtotal(Movimiento movimiento, int mes) {
         double subtotal = 0;
-        
+
         if (movimiento.getTipo() == Tipo.DEPOSITO) {
             subtotal += movimiento.getCantidad();
         } else if (movimiento.getTipo() == Tipo.RETIRO) {
             subtotal -= movimiento.getCantidad();
         }
-        
+
         return subtotal;
     }
 
