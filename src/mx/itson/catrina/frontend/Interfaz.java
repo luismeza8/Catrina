@@ -7,6 +7,10 @@ package mx.itson.catrina.frontend;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 import mx.itson.catrina.backend.entidades.Estado;
@@ -118,6 +122,18 @@ public class Interfaz extends javax.swing.JFrame {
             }
         ));
         jScrollPane3.setViewportView(tblPrincipal);
+        if (tblPrincipal.getColumnModel().getColumnCount() > 0) {
+            tblPrincipal.getColumnModel().getColumn(0).setResizable(false);
+            tblPrincipal.getColumnModel().getColumn(0).setPreferredWidth(5);
+            tblPrincipal.getColumnModel().getColumn(1).setResizable(false);
+            tblPrincipal.getColumnModel().getColumn(1).setPreferredWidth(500);
+            tblPrincipal.getColumnModel().getColumn(2).setResizable(false);
+            tblPrincipal.getColumnModel().getColumn(2).setPreferredWidth(5);
+            tblPrincipal.getColumnModel().getColumn(3).setResizable(false);
+            tblPrincipal.getColumnModel().getColumn(3).setPreferredWidth(5);
+            tblPrincipal.getColumnModel().getColumn(4).setResizable(false);
+            tblPrincipal.getColumnModel().getColumn(4).setPreferredWidth(5);
+        }
 
         jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 900, -1));
 
@@ -170,24 +186,27 @@ public class Interfaz extends javax.swing.JFrame {
                 DefaultTableModel modelInfo = (DefaultTableModel) tblInfo.getModel();
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
                 DefaultTableModel modelResumen = (DefaultTableModel) tblResumen.getModel();
-                
                 DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
                 
+                Locale local = new Locale("es", "MX");
+                NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
+                DateFormat formatoFecha = new SimpleDateFormat("d/MM/yyyy");
+
                 for (Movimiento m : estado.getMovimientos()) {
-                    if(m.getTipo() == Tipo.DEPOSITO) {
-                        modelPrincipal.addRow(new Object[] {
-                            m.getFecha(),
+                    if (m.getTipo() == Tipo.DEPOSITO) {
+                        modelPrincipal.addRow(new Object[]{
+                            formatoFecha.format(m.getFecha()),
                             m.getDescripcion(),
-                            m.getCantidad(),
+                            formatoMoneda.format(m.getCantidad()),
                             " ",
                             " "
                         });
                     } else if (m.getTipo() == Tipo.RETIRO) {
-                        modelPrincipal.addRow(new Object[] {
-                            m.getFecha(),
+                        modelPrincipal.addRow(new Object[]{
+                            formatoFecha.format(m.getFecha()),
                             m.getDescripcion(),
                             " ",
-                            m.getCantidad(), 
+                            formatoMoneda.format(m.getCantidad()),
                             " "
                         });
                     }
@@ -200,9 +219,11 @@ public class Interfaz extends javax.swing.JFrame {
                 for (Object o : estado.obtenerLista()) {
                     modelContable.addRow(new Object[]{o});
                 }
+
                 
+
                 System.out.println(estado.obtenerSaldoInicial(estado.getMovimientos(), 2));
-                
+
             }
 
         } catch (Exception ex) {
