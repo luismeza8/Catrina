@@ -146,6 +146,11 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 900, -1));
 
         jcbMeses.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        jcbMeses.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbMesesActionPerformed(evt);
+            }
+        });
         jPanel1.add(jcbMeses, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 40, 240, -1));
 
         tblResumen.setModel(new javax.swing.table.DefaultTableModel(
@@ -195,29 +200,41 @@ public class Interfaz extends javax.swing.JFrame {
                 DefaultTableModel modelContable = (DefaultTableModel) tblContable.getModel();
                 DefaultTableModel modelResumen = (DefaultTableModel) tblResumen.getModel();
                 DefaultTableModel modelPrincipal = (DefaultTableModel) tblPrincipal.getModel();
+                
+                modelInfo.setRowCount(0);
+                modelContable.setRowCount(0);
+                modelResumen.setRowCount(0);
+                modelPrincipal.setRowCount(0);
 
                 Locale local = new Locale("es", "MX");
                 NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
                 DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
                 int mesSeleccionado = jcbMeses.getSelectedIndex();
+                
+                double subtotal = estado.obtenerSaldoInicial(mesSeleccionado);
 
                 for (Movimiento m : estado.obtenerListaMovimientosFiltrada(mesSeleccionado)) {
                     if (m.getTipo() == Tipo.DEPOSITO) {
+                        subtotal += m.getCantidad();
+                        
                         modelPrincipal.addRow(new Object[]{
                             formatoFecha.format(m.getFecha()),
                             m.getDescripcion(),
                             formatoMoneda.format(m.getCantidad()),
                             " ",
-                            " "
+                            formatoMoneda.format(subtotal),
+                            
                         });
                     } else if (m.getTipo() == Tipo.RETIRO) {
+                        subtotal -= m.getCantidad();
+                        
                         modelPrincipal.addRow(new Object[]{
                             formatoFecha.format(m.getFecha()),
                             m.getDescripcion(),
                             " ",
                             formatoMoneda.format(m.getCantidad()),
-                            " "
+                            formatoMoneda.format(subtotal)
                         });
                     }
                 }
@@ -239,6 +256,11 @@ public class Interfaz extends javax.swing.JFrame {
             System.err.println("Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void jcbMesesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbMesesActionPerformed
+        int mesSeleccionado = jcbMeses.getSelectedIndex();
+        System.out.println(mesSeleccionado);
+    }//GEN-LAST:event_jcbMesesActionPerformed
 
     /**
      * @param args the command line arguments

@@ -87,7 +87,7 @@ public class Estado {
         }
 
         movimientos.sort((m1, m2) -> m1.getFecha().compareTo(m2.getFecha()));
-        
+
         return movimientos;
     }
 
@@ -133,6 +133,18 @@ public class Estado {
         }
 
         return totalRetiros;
+    }
+
+    public double obtenerSubtotal(Movimiento movimiento, int mes) {
+        double subtotal = 0;
+        
+        if (movimiento.getTipo() == Tipo.DEPOSITO) {
+            subtotal += movimiento.getCantidad();
+        } else if (movimiento.getTipo() == Tipo.RETIRO) {
+            subtotal -= movimiento.getCantidad();
+        }
+        
+        return subtotal;
     }
 
     /**
