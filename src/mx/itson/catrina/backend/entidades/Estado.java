@@ -86,6 +86,8 @@ public class Estado {
             }
         }
 
+        movimientos.sort((m1, m2) -> m1.getFecha().compareTo(m2.getFecha()));
+        
         return movimientos;
     }
 
