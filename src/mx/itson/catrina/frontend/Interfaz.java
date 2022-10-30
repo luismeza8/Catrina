@@ -120,7 +120,15 @@ public class Interfaz extends javax.swing.JFrame {
             new String [] {
                 "Fecha", "Descripcion", "Deposito", "Retiro", "Subtotal"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(tblPrincipal);
         if (tblPrincipal.getColumnModel().getColumnCount() > 0) {
             tblPrincipal.getColumnModel().getColumn(0).setResizable(false);
@@ -190,7 +198,7 @@ public class Interfaz extends javax.swing.JFrame {
                 
                 Locale local = new Locale("es", "MX");
                 NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
-                DateFormat formatoFecha = new SimpleDateFormat("d/MM/yyyy");
+                DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
                 for (Movimiento m : estado.getMovimientos()) {
                     if (m.getTipo() == Tipo.DEPOSITO) {
@@ -220,10 +228,19 @@ public class Interfaz extends javax.swing.JFrame {
                     modelContable.addRow(new Object[]{o});
                 }
 
+                int mesSeleccionado = jcbMeses.getSelectedIndex();
                 
-
-                System.out.println(estado.obtenerSaldoInicial(estado.getMovimientos(), 2));
-
+                modelResumen.addRow(new Object[]{
+                    formatoMoneda.format(estado.obtenerSaldoInicial(mesSeleccionado)),
+                });
+                
+                modelResumen.addRow(new Object[] {
+                    formatoMoneda.format(estado.obtenerTotalDepositos(mesSeleccionado))
+                });
+                
+                modelResumen.addRow(new Object[] {
+                    formatoMoneda.format(estado.obtenerTotalRetiros(mesSeleccionado))
+                });
             }
 
         } catch (Exception ex) {

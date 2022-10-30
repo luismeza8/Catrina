@@ -60,11 +60,11 @@ public class Estado {
         return lista;
     }
 
-    public double obtenerSaldoInicial(List<Movimiento> movimientos, int mes) {
+    public double obtenerSaldoInicial(int mes) {
         double saldoInicial = 0;
 
-        for (Movimiento m : movimientos) {
-            for (int i = 0; i < movimientos.size(); i++) {
+        for (Movimiento m : this.movimientos) {
+            for (int i = 0; i < mes; i++) {
                 if (m.getFecha().getMonth() == i && m.getTipo() == Tipo.DEPOSITO) {
                     saldoInicial += m.getCantidad();
                 } else if (m.getFecha().getMonth() == i && m.getTipo() == Tipo.RETIRO) {
@@ -74,6 +74,30 @@ public class Estado {
         }
 
         return saldoInicial;
+    }
+    
+    public double obtenerTotalDepositos(int mes) {
+        double totalDepositos = 0;
+        
+        for(Movimiento m : this.movimientos) {
+            if (m.getTipo() == Tipo.DEPOSITO && m.getFecha().getMonth() == mes) {
+                totalDepositos += m.getCantidad();
+            }
+        }
+        
+        return totalDepositos;
+    }
+    
+    public double obtenerTotalRetiros(int mes) {
+        double totalRetiros = 0;
+        
+        for(Movimiento m : this.movimientos) {
+            if (m.getTipo() == Tipo.RETIRO && m.getFecha().getMonth() == mes) {
+                totalRetiros += m.getCantidad();
+            }
+        }
+        
+        return totalRetiros;
     }
 
     /**
