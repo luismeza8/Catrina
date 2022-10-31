@@ -17,18 +17,6 @@ public class Cliente {
     private String rfc;
     private String cp;
 
-    public Object[] obtenerLista() {
-        Object[] lista = {
-            "Nombre: " + getNombre(),
-            "RFC: " + getRfc(),
-            "Domicilio: " + getDomicilio(),
-            "Cuidad: " + getCiudad(),
-            "CP: " + getCp()
-        };
-
-        return lista;
-    }
-
     /**
      * @return the codigo
      */

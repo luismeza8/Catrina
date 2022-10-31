@@ -5,6 +5,7 @@
 package mx.itson.catrina.backend.entidades;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Locale;
 import mx.itson.catrina.backend.enumeradores.Tipo;
 
 /**
- *
+ * 
  * @author lm
  */
 public class Estado {
@@ -24,19 +25,28 @@ public class Estado {
     private Cliente cliente;
     private List<Movimiento> movimientos;
 
+    /**
+     * Pasa los datos de un json al objeto estado.
+     * @param json Es el json a convertir.
+     * @return El objeto estado con los atributos del json.
+     */
     public Estado deserializar(String json) {
         Estado estado = new Estado();
 
         try {
             estado = new Gson().fromJson(json, Estado.class);
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
             System.err.println("Error: " + e.getMessage());
         }
 
         return estado;
     }
 
-    public Object[] obtenerLista() {
+    /**
+     * Ordena la información de la cuenta.
+     * @return Una lista con la información ordenada.
+     */
+    public Object[] obtenerInfoCuentaOrdenada() {
         Object[] lista = {
             "Cuenta: " + getCuenta(),
             "Clabe: " + getClabe(),
@@ -45,8 +55,29 @@ public class Estado {
 
         return lista;
     }
+    
+    /**
+     * Ordena la información del cliente.
+     * @return Una lista con la información ordenada.
+     */
+    public Object[] obtenerInfoClienteOrdenada() {
+        Object[] lista = {
+            "Nombre: " + cliente.getNombre(),
+            "RFC: " + cliente.getRfc(),
+            "Domicilio: " + cliente.getDomicilio(),
+            "Cuidad: " + cliente.getCiudad(),
+            "CP: " + cliente.getCp()
+        };
 
-    public Object[] obtenerInfoResumen(int mes) {
+        return lista;
+    }
+    
+    /**
+     * Ordena la información del resumen.
+     * @param mes El número mes del que se hará el resumen.
+     * @return Una lista con todos los resumenes ordenados.
+     */
+    public Object[] obtenerInfoResumenOrdenada(int mes) {
         Locale local = new Locale("es", "MX");
         NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
 
@@ -60,20 +91,30 @@ public class Estado {
         return lista;
     }
 
+    /**
+     * Filtra la lista de movimientos para solo mostrar los necesarios.
+     * @param mes El número del mes.
+     * @return Una lista de los movimientos del mes dado.
+     */
     public List<Movimiento> obtenerListaMovimientosFiltrada(int mes) {
-        List<Movimiento> movimientos = new ArrayList<>();
+        List<Movimiento> movimientosFiltrados = new ArrayList<>();
 
         for (Movimiento m : this.movimientos) {
             if (m.getFecha().getMonth() == mes) {
-                movimientos.add(m);
+                movimientosFiltrados.add(m);
             }
         }
 
-        movimientos.sort((m1, m2) -> m1.getFecha().compareTo(m2.getFecha()));
+        movimientosFiltrados.sort((m1, m2) -> m1.getFecha().compareTo(m2.getFecha()));
 
-        return movimientos;
+        return movimientosFiltrados;
     }
 
+    /**
+     * El saldo inicial según el mes.
+     * @param mes El número del mes.
+     * @return El saldo inicial, osea el saldo de los meses anteriores combinado.
+     */
     public double obtenerSaldoInicial(int mes) {
         double saldoInicial = 0;
 
@@ -90,10 +131,20 @@ public class Estado {
         return saldoInicial;
     }
 
+    /**
+     * Obtiene el saldo final del mes.
+     * @param mes El número del mes.
+     * @return El saldo final.
+     */
     public double obtenerSaldoFinal(int mes) {
         return (obtenerSaldoInicial(mes) + obtenerTotalDepositos(mes) - obtenerTotalRetiros(mes));
     }
 
+    /**
+     * Obtiene el total de los depositos del mes seleccionado.
+     * @param mes El número del mes.
+     * @return El total de depositos.
+     */
     public double obtenerTotalDepositos(int mes) {
         double totalDepositos = 0;
 
@@ -106,6 +157,11 @@ public class Estado {
         return totalDepositos;
     }
 
+    /**
+     * Obtiene el total de los retiros del mes seleccionado.
+     * @param mes El número del mes.
+     * @return El total de los retiros.
+     */
     public double obtenerTotalRetiros(int mes) {
         double totalRetiros = 0;
 
@@ -116,18 +172,6 @@ public class Estado {
         }
 
         return totalRetiros;
-    }
-
-    public double obtenerSubtotal(Movimiento movimiento, int mes) {
-        double subtotal = 0;
-
-        if (movimiento.getTipo() == Tipo.DEPOSITO) {
-            subtotal += movimiento.getCantidad();
-        } else if (movimiento.getTipo() == Tipo.RETIRO) {
-            subtotal -= movimiento.getCantidad();
-        }
-
-        return subtotal;
     }
 
     /**

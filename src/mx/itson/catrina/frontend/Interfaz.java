@@ -57,6 +57,7 @@ public class Interfaz extends javax.swing.JFrame {
         jcbMeses = new javax.swing.JComboBox<>();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblResumen = new javax.swing.JTable();
+        lblError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(900, 800));
@@ -169,6 +170,7 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane4.setViewportView(tblResumen);
 
         jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 130, 360, 120));
+        jPanel1.add(lblError, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 80, 270, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,6 +201,9 @@ public class Interfaz extends javax.swing.JFrame {
     NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
     DateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
 
+    /**
+     * Vacia todas las tablas
+     */
     public void vaciarTablas() {
         modelInfo.setRowCount(0);
         modelContable.setRowCount(0);
@@ -206,9 +211,13 @@ public class Interfaz extends javax.swing.JFrame {
         modelPrincipal.setRowCount(0);
     }
 
+    /**
+     * Llena las tablas
+     */
     public void llenarTablas() {
         int mesSeleccionado = jcbMeses.getSelectedIndex();
         double subtotal = estado.obtenerSaldoInicial(mesSeleccionado);
+        lblError.setText("");
 
         for (Movimiento m : estado.obtenerListaMovimientosFiltrada(mesSeleccionado)) {
             if (m.getTipo() == Tipo.DEPOSITO) {
@@ -234,15 +243,15 @@ public class Interfaz extends javax.swing.JFrame {
             }
         }
 
-        for (Object o : estado.getCliente().obtenerLista()) {
+        for (Object o : estado.obtenerInfoClienteOrdenada()) {
             modelInfo.addRow(new Object[]{o});
         }
 
-        for (Object o : estado.obtenerLista()) {
+        for (Object o : estado.obtenerInfoCuentaOrdenada()) {
             modelContable.addRow(new Object[]{o});
         }
 
-        for (Object o : estado.obtenerInfoResumen(mesSeleccionado)) {
+        for (Object o : estado.obtenerInfoResumenOrdenada(mesSeleccionado)) {
             modelResumen.addRow(new Object[]{o});
         }
     }
@@ -265,7 +274,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
 
         } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
+            lblError.setText("Selecciona el archivo JSON correcto.");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -321,6 +330,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JComboBox<String> jcbMeses;
+    private javax.swing.JLabel lblError;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JTable tblContable;
     private javax.swing.JTable tblInfo;
